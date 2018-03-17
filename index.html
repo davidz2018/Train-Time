@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>Train time</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="assets/style.css">
+        <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+       
+    </head>
+    <body>
+        <div class="container">
+
+            <br>
+      
+            
+            <div class="jumbotron">
+              <h1 class="text-center">Main Street Train Station</h1>
+              <h3 class="text-center">Destinations and Arrival times of all Trains</h3>
+            </div>
+
+            <table class="table">
+                <thead class="theads">
+                  <tr>
+                    <th scope="col">Train Name</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Frequency</th>
+                    <th scope="col">Next Arrival</th>
+                    <th scope="col">Minutes Away</th>
+                    
+                  </tr>
+                </thead>
+                <tbody class="tbody">
+
+                </tbody>
+                  
+              </table>
+              
+             
+            <div class="row">
+                <div class="col-lg-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">Add Train</h3>
+                    </div>
+                    <div class="panel-body">
+                      <form>
+                        <div class="form-group">
+                          <label for="train-name">Train Name</label>
+                          <input class="form-control" id="train-name" type="text">
+                        </div>
+                        <div class="form-group">
+                          <label for="dest">Destination</label>
+                          <input class="form-control" id="dest" type="text">
+                        </div> 
+                        <div class="form-group">
+                            <label for="freq">Frequency(min)</label>
+                            <input class="form-control" id="freq" type="date-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="nxtArriv">Next Arrival</label>
+                            <input class="form-group" id="nxtArriv" type="number">
+                        </div>
+                        <div class="form-group">
+                          <label for="mAway">Minutes Away</label>
+                          <input class="form-group" id="mAway" type="number">
+                      </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>  
+              </div>
+        
+            </div>
+            <script src="https://code.jquery.com/jquery.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+<script>
+
+   var config = {
+    apiKey: "AIzaSyBwQ5xA2A2lSZCKDbGxUX4Lkijenwt9hl4",
+    authDomain: "project-employee-8ba64.firebaseapp.com",
+    databaseURL: "https://project-employee-8ba64.firebaseio.com",
+    projectId: "project-employee-8ba64",
+    storageBucket: "",
+    messagingSenderId: "1030616452434"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();
+
+
+var name = "";
+var dest = "";
+var freq = 15;
+var nArriv = "";
+var mAway = "";
+
+
+$(".btn").on("click", function(event) {
+  event.preventDefault();
+
+  name = $("#train-name").val().trim();
+  dest = $("#dest").val().trim();
+  freq = $("#freq").val().trim();
+  nArriv = $("#nxtArriv").val().trim();
+  mAway = $("#mAway").val().trim();
+
+ 
+  database.ref().push({
+    name: name,
+    dest: dest,
+    freq: freq,
+    nArriv: nArriv,
+    mAway: mAway,
+    dateAdded: firebase.database.ServerValue.TIMESTAMP
+  });
+
+});
+
+
+
+database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
+
+  var sv = snapshot.val();
+
+
+  console.log(sv.name);
+  console.log(sv.dest);
+  console.log(sv.freq);
+  console.log(sv.nArriv);
+  console.log(sv.mAway);
+var tr= $("<tr>");
+  $(tr).append("<td>" + snapshot.val().name + "</td>")
+  $(tr).append("<td>" + snapshot.val().dest + "</td>")
+  $(tr).append("<td>" + snapshot.val().freq + "</td>")
+  $(tr).append("<td>" + snapshot.val().nArriv + "</td>")
+  $(tr).append("<td>" + snapshot.val().mAway + "</td>")
+
+  $(".tbody").append(tr);
+  
+
+
+
+}, function(errorObject) {
+  console.log("Errors handled: " + errorObject.code);
+});
+
+</script>
+    </body>
+</html>
